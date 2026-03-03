@@ -10,9 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

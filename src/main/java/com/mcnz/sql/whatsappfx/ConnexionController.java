@@ -44,7 +44,6 @@ public class ConnexionController {
             alert.showAndWait();
         }
     }
-
     @FXML
     private void Connexion(ActionEvent event) throws IOException {
 
