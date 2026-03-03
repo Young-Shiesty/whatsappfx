@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import static javafx.application.Application.launch;
 
 public class MessageController {
 
@@ -30,11 +29,10 @@ public class MessageController {
     public void gereClient(Client client) {
         this.client = client;
 
-        // Quand on reçoit un message
         client.MessageRecu((sender, contenu) -> {
             Platform.runLater(() -> afficherMessage(sender, contenu, false));
         });
-        // Quand un user se connecte
+
         client.UserConnecter((username) -> {
             Platform.runLater(() -> {
                 if (!usersListView.getItems().contains(username)) {
@@ -42,7 +40,6 @@ public class MessageController {
                 }
             });
         });
-        // Quand un user se déconnecte
         client.UserDeConnecter((username) -> {
             Platform.runLater(() -> usersListView.getItems().remove(username));
         });
@@ -51,7 +48,6 @@ public class MessageController {
 
     @FXML
     public void initialize() {
-        // Clic sur un user dans la liste
         usersListView.setOnMouseClicked(event -> {
             String userSelectionne = usersListView.getSelectionModel().getSelectedItem();
             if (userSelectionne != null) {
@@ -67,16 +63,15 @@ public class MessageController {
         String contenu = messageField.getText();
 
         if (selectedUser == null) {
-            chatWithLabel.setText("⚠️ Sélectionne d'abord un utilisateur !");
+            chatWithLabel.setText("Sélectionne d'abord un utilisateur !");
             return;
         }
         if (contenu.isEmpty()) return;
 
-        // Envoyer le message
 
         client.envoieMessage(selectedUser, contenu);
 
-        // Afficher la bulle à droite (moi)
+
         afficherMessage("Moi", contenu, true);
         messageField.clear();
     }
@@ -84,7 +79,7 @@ public class MessageController {
     @FXML
     public void gererDeconnection() {
         client.closeTt();
-        // Fermer la fenêtre
+
         Stage stage = (Stage) messageField.getScene().getWindow();
         stage.close();
     }
@@ -99,14 +94,14 @@ public class MessageController {
         label.setPadding(new Insets(10));
 
         if (estMoi) {
-            // Bulle verte à droite
+
             label.setStyle("-fx-background-color: #25d366; " +
                     "-fx-text-fill: white; " +
                     "-fx-background-radius: 10; " +
                     "-fx-font-size: 13px;");
             hbox.setAlignment(Pos.CENTER_RIGHT);
         } else {
-            // Bulle grise à gauche
+
             label.setStyle("-fx-background-color: #3e3e4e; " +
                     "-fx-text-fill: white; " +
                     "-fx-background-radius: 10; " +
@@ -116,8 +111,6 @@ public class MessageController {
 
         hbox.getChildren().add(label);
         messagesBox.getChildren().add(hbox);
-
-        // Auto-scroll vers le bas
         Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 
