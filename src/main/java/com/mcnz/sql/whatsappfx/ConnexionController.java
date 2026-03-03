@@ -1,3 +1,4 @@
+
 package com.mcnz.sql.whatsappfx;
 
 import com.mcnz.sql.whatsappfx.entity.User;
@@ -8,12 +9,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloController {
+public class ConnexionController {
     private UserRepository userRepository = new UserRepository();
 
     @FXML
@@ -22,15 +24,27 @@ public class HelloController {
     @FXML
     private TextField username_input;
 
-
     @FXML
-    void Ajouter(ActionEvent event) {
-        User user = new User(
+    void SeConnecter(ActionEvent event) throws IOException {
+        User user = userRepository.connecter(
                 username_input.getText(),
                 password_input.getText()
         );
-        userRepository.insert(user);
+        if (user != null) {
+            Stage stage = (Stage) username_input.getScene().getWindow();
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("message.fxml"));
+            Scene scene = new Scene(fxml.load());
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Identifiant ou mot de passe incorrect !");
+            alert.showAndWait();
+        }
     }
+
     @FXML
     private void Connexion(ActionEvent event) throws IOException {
 
@@ -43,17 +57,10 @@ public class HelloController {
         stage.show();
     }
 
-    @FXML
-    void FermerPage(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
-    @FXML
-    void clearInterface(ActionEvent event) {
-        username_input.clear();
-        password_input.clear();
-    }
-
 }
+
+
+
+
 
 
