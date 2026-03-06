@@ -33,7 +33,11 @@ public class ClientHandler implements Runnable {
             }
             clientHandlers.add(this);
             System.out.println("[CONNEXION] " + clientUsername + " s'est connecté");
-            System.out.println(clientUsername+" est en ligne");
+            bufferedWriter.write("OK");
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+
+            broadcastMessage("SERVEUR", clientUsername + " est en ligne");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +51,6 @@ public class ClientHandler implements Runnable {
                 try {
                     String destinataire = bufferedReader.readLine();
                     String contenu = bufferedReader.readLine();
-
                     if (destinataire == null || contenu == null) break;
 
                     if (contenu.isEmpty()) {
@@ -72,7 +75,6 @@ public class ClientHandler implements Runnable {
                     if (!trouver) {
                         envoieMess("SERVEUR", destinataire + " est hors ligne");
                     }
-
                 } catch (IOException e) {
                     closeTt();
                     break;
@@ -103,7 +105,6 @@ public class ClientHandler implements Runnable {
         clientHandlers.remove(this);
         System.out.println("[DECONNEXION] " + clientUsername + " est deconnecte");
         broadcastMessage(clientUsername , " est hors ligne");
-
     }
 
     public void closeTt() {

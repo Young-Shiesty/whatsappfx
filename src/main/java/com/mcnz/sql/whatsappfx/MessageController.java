@@ -28,24 +28,18 @@ public class MessageController {
 
     public void gereClient(Client client) {
         this.client = client;
-
-        client.MessageRecu((sender, contenu) -> {
-            Platform.runLater(() -> afficherMessage(sender, contenu, false));
+        client.MessageRecu((envoyeur, contenu) -> {
+            Platform.runLater(()->afficherMessage(envoyeur+":", contenu, false));
         });
-
         client.UserConnecter((username) -> {
-            Platform.runLater(() -> {
-                if (!usersListView.getItems().contains(username)) {
-                    usersListView.getItems().add(username);
-                }
-            });
+            Platform.runLater(()->usersListView.getItems().add(username));
         });
         client.UserDeConnecter((username) -> {
-            Platform.runLater(() -> usersListView.getItems().remove(username));
+            Platform.runLater(()->usersListView.getItems().remove(username));
         });
+        // On commence à écouter les messages
         client.EcouterMessage();
     }
-
     @FXML
     public void initialize() {
         usersListView.setOnMouseClicked(event -> {
@@ -79,7 +73,6 @@ public class MessageController {
     @FXML
     public void gererDeconnection() {
         client.closeTt();
-
         Stage stage = (Stage) messageField.getScene().getWindow();
         stage.close();
     }
@@ -94,14 +87,12 @@ public class MessageController {
         label.setPadding(new Insets(10));
 
         if (estMoi) {
-
             label.setStyle("-fx-background-color: #25d366; " +
                     "-fx-text-fill: white; " +
                     "-fx-background-radius: 10; " +
                     "-fx-font-size: 13px;");
             hbox.setAlignment(Pos.CENTER_RIGHT);
         } else {
-
             label.setStyle("-fx-background-color: #3e3e4e; " +
                     "-fx-text-fill: white; " +
                     "-fx-background-radius: 10; " +

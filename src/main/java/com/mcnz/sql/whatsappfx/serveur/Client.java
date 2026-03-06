@@ -3,7 +3,8 @@ package com.mcnz.sql.whatsappfx.serveur;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class Client {
 
@@ -11,6 +12,21 @@ public class Client {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String username;
+    //la fonction callbak pour avoir celui qui envoie le mess et ce quil a envoye
+    private BiConsumer<String, String> MessageRecu;
+    //la fonction callbak pour verifier si le user c connecter
+    private Consumer<String> UserConnecter;
+    private Consumer<String> UserDeConnecter;
+
+    public void MessageRecu(BiConsumer<String, String> callback) {
+        this.MessageRecu = callback;
+    }
+    public void UserConnecter(Consumer<String> callback) {
+        this.UserConnecter = callback;
+    }
+    public void UserDeConnecter(Consumer<String> callback) {
+        this.UserDeConnecter = callback;
+    }
 
     public Client(Socket socket, String username) {
         try {
@@ -43,22 +59,33 @@ public class Client {
             return false;
         }
     }
-
     public void EcouterMessage() {
+        //pour ecouter en arriere plan
         new Thread(() -> {
             while (socket.isConnected()) {
                 try {
-                    String message = bufferedReader.readLine();
-                    if (message == null) break;
-                    System.out.println("" + message);
+                    String envoyeur = bufferedReader.readLine();
+                    String contenu    = bufferedReader.readLine();
+
+                    if (envoyeur == null || contenu == null) break;
+                    if (envoyeur.equals("SERVEUR") && contenu.contains("est en ligne")) {
+                        String username = contenu.replace(" est en ligne", "").trim();
+                        if (UserConnecter != null) UserConnecter.accept(username);
+                    }
+                    else if (envoyeur.equals("SERVEUR") && contenu.contains("est hors ligne")) {
+                        String username = contenu.replace(" est hors ligne", "").trim();
+                        if (UserDeConnecter != null) UserDeConnecter.accept(username);
+                    }
+                    else {
+                        if (MessageRecu != null) MessageRecu.accept(envoyeur, contenu);
+                    }
                 } catch (IOException e) {
-                    closeTt();
+                    System.out.println("Connexion perdue !");
                     break;
                 }
             }
         }).start();
     }
-
     public void envoieMessage(String destinataire, String contenu) {
         try {
             bufferedWriter.write(destinataire);
@@ -81,30 +108,30 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Username : ");
-        String username = scanner.nextLine();
-        System.out.print("Password : ");
-        String password = scanner.nextLine();
-
-        Socket socket = new Socket("localhost", 1234);
-        Client client = new Client(socket, username);
-
-        // Se connecter
-        if (!client.login(password)) {
-            System.out.println("Login ou password incorrect.");
-            return;
-        }
-        client.EcouterMessage();
-
-        while (socket.isConnected()) {
-            System.out.println("Destinataire :");
-            String destinataire = scanner.nextLine();
-            System.out.println("Ton message :");
-            String contenu = scanner.nextLine();
-            client.envoieMessage(destinataire, contenu);
-        }
-    }
+//    public static void main(String[] args) throws IOException {
+//        Scanner scanner = new Scanner(System.in);
+//
+//        System.out.print("Username : ");
+//        String username = scanner.nextLine();
+//        System.out.print("Password : ");
+//        String password = scanner.nextLine();
+//
+//        Socket socket = new Socket("localhost", 1234);
+//        Client client = new Client(socket, username);
+//
+//        // Se connecter
+//        if (!client.login(password)) {
+//            System.out.println("Login ou password incorrect.");
+//            return;
+//        }
+//        client.EcouterMessage();
+//
+//        while (socket.isConnected()) {
+//            System.out.println("Destinataire :");
+//            String destinataire = scanner.nextLine();
+//            System.out.println("Ton message :");
+//            String contenu = scanner.nextLine();
+//            client.envoieMessage(destinataire, contenu);
+//        }
+//    }
 }

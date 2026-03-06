@@ -6,8 +6,6 @@
       fx:controller="com.mcnz.sql.whatsappfx.MessageController"
       prefWidth="800" prefHeight="600"
       style="-fx-background-color: #1e1e2e;">
-
-   <!-- Colonne gauche : liste des users -->
    <VBox style="-fx-background-color: #2e2e3e; -fx-padding: 10;"
          prefWidth="200">
 
@@ -17,32 +15,22 @@
       <ListView fx:id="usersListView"
                 VBox.vgrow="ALWAYS"
                 style="-fx-background-color: transparent; -fx-text-fill: white;"/>
-
-      <!-- Bouton déconnexion -->
       <Button text="Se déconnecter"
               onAction="#gererDeconnection"
               style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 15; -fx-cursor: hand;"
               maxWidth="Infinity"/>
    </VBox>
-
-   <!-- Colonne droite : messages + champ envoi -->
    <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 10;" spacing="10">
-
-      <!-- Header : avec qui on parle -->
       <Label fx:id="chatWithLabel"
              text="Selectionne un user"
              style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;
                       -fx-background-color: #2e2e3e; -fx-padding: 10; -fx-background-radius: 5;"/>
-
-      <!-- Zone messages -->
       <ScrollPane fx:id="scrollPane"
                   VBox.vgrow="ALWAYS"
                   fitToWidth="true"
                   style="-fx-background: #1e1e2e; -fx-background-color: #1e1e2e;">
          <VBox fx:id="messagesBox" spacing="8" style="-fx-padding: 10;"/>
       </ScrollPane>
-
-      <!-- Champ envoi -->
       <HBox spacing="10">
          <TextField fx:id="messageField"
                     promptText="Ecris ton message..."

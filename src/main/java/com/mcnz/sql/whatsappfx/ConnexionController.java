@@ -3,6 +3,7 @@ package com.mcnz.sql.whatsappfx;
 
 import com.mcnz.sql.whatsappfx.entity.User;
 import com.mcnz.sql.whatsappfx.repository.impl.UserRepository;
+import com.mcnz.sql.whatsappfx.serveur.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Socket;
 
 public class ConnexionController {
     private UserRepository userRepository = new UserRepository();
@@ -31,9 +33,15 @@ public class ConnexionController {
                 password_input.getText()
         );
         if (user != null) {
+            Socket socket = new Socket("localhost", 1235);
+            Client client = new Client(socket, username_input.getText());
+            client.login(password_input.getText());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("message.fxml"));
+            Scene scene = new Scene(loader.load());
+            MessageController messageController = loader.getController();
+            messageController.gereClient(client);
+
             Stage stage = (Stage) username_input.getScene().getWindow();
-            FXMLLoader fxml = new FXMLLoader(getClass().getResource("message.fxml"));
-            Scene scene = new Scene(fxml.load());
             stage.setScene(scene);
             stage.show();
         } else {
@@ -48,10 +56,8 @@ public class ConnexionController {
     private void Connexion(ActionEvent event) throws IOException {
 
         Parent root = FXMLLoader.load(getClass().getResource("Connexion.fxml"));
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
-
         stage.setScene(scene);
         stage.show();
     }
