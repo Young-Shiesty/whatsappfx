@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -21,7 +22,7 @@ public class ConnexionController {
     private UserRepository userRepository = new UserRepository();
 
     @FXML
-    private TextField password_input;
+    private PasswordField password_input;
 
     @FXML
     private TextField username_input;
@@ -34,7 +35,7 @@ public class ConnexionController {
                 password_input.getText()
         );
         if (user != null) {
-            Socket socket = new Socket("localhost", 1234);
+            Socket socket = new Socket("localhost", 1235);
             Client client = new Client(socket, username_input.getText());
             boolean ok = client.login(password_input.getText());
 
@@ -68,6 +69,14 @@ public class ConnexionController {
         Parent root = FXMLLoader.load(getClass().getResource("Connexion.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+    @FXML
+    void SInscrire(ActionEvent event) throws IOException {
+        Stage stage = (Stage) username_input.getScene().getWindow();
+        FXMLLoader fxml = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+        Scene scene = new Scene(fxml.load());
         stage.setScene(scene);
         stage.show();
     }

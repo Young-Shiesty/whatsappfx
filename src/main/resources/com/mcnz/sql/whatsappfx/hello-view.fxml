@@ -1,19 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="830.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mcnz.sql.whatsappfx.HelloController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="568.0" prefWidth="830.0"
+            style="-fx-background-color: #1E1E2E;"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mcnz.sql.whatsappfx.HelloController">
    <children>
-      <Text layoutX="70.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="93.33670043945312" />
-      <TextField fx:id="username_input" layoutX="143.0" layoutY="53.0" />
-      <Text layoutX="70.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
-      <TextField fx:id="password_input" layoutX="144.0" layoutY="113.0" />
-      <Button layoutX="178.0" layoutY="215.0" mnemonicParsing="false" onAction="#Ajouter" prefHeight="26.0" prefWidth="158.0" text="S'inscrire" />
-      <Button layoutX="47.0" layoutY="215.0" mnemonicParsing="false" onAction="#Connexion" text="Connexion" />
-      <Button layoutX="118.0" layoutY="168.0" mnemonicParsing="false" onAction="#FermerPage" prefHeight="26.0" prefWidth="134.0" text="Fermer" />
-      <Button layoutX="44.0" layoutY="169.0" mnemonicParsing="false" onAction="#clearInterface" text="Effacer" />
+
+      <!-- Titre -->
+      <Text layoutX="315.0" layoutY="100.0"
+            text="Inscription"
+            fill="#CBA6F7"
+            strokeType="OUTSIDE" strokeWidth="0.0">
+         <font><Font name="Arial Bold" size="32.0"/></font>
+      </Text>
+
+      <!-- Username Label -->
+      <Text layoutX="265.0" layoutY="175.0"
+            text="Username"
+            fill="#CDD6F4"
+            strokeType="OUTSIDE" strokeWidth="0.0">
+         <font><Font name="Arial" size="13.0"/></font>
+      </Text>
+
+      <!-- Username Input -->
+      <TextField fx:id="username_input"
+                 layoutX="265.0" layoutY="183.0"
+                 prefWidth="300.0" prefHeight="40.0"
+                 promptText="Entrez votre username"
+                 style="-fx-background-color: #313244; -fx-text-fill: #CDD6F4; -fx-border-color: #CBA6F7; -fx-border-radius: 6; -fx-background-radius: 6; -fx-prompt-text-fill: #585B70; -fx-font-size: 13;"/>
+
+      <!-- Password Label -->
+      <Text layoutX="265.0" layoutY="245.0"
+            text="Password"
+            fill="#CDD6F4"
+            strokeType="OUTSIDE" strokeWidth="0.0">
+         <font><Font name="Arial" size="13.0"/></font>
+      </Text>
+
+      <!-- Password Input -->
+      <PasswordField fx:id="password_input"
+                     layoutX="265.0" layoutY="253.0"
+                     prefWidth="300.0" prefHeight="40.0"
+                     promptText="Entrez votre mot de passe"
+                     style="-fx-background-color: #313244; -fx-text-fill: #CDD6F4; -fx-border-color: #CBA6F7; -fx-border-radius: 6; -fx-background-radius: 6; -fx-prompt-text-fill: #585B70; -fx-font-size: 13;"/>
+
+      <!-- Bouton S'inscrire -->
+      <Button layoutX="265.0" layoutY="320.0"
+              prefWidth="300.0" prefHeight="38.0"
+              mnemonicParsing="false"
+              onAction="#Ajouter"
+              text="S'inscrire"
+              style="-fx-background-color: #CBA6F7; -fx-text-fill: #1E1E2E; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+      <!-- Bouton Connexion -->
+      <Button layoutX="265.0" layoutY="370.0"
+              prefWidth="300.0" prefHeight="38.0"
+              mnemonicParsing="false"
+              onAction="#Connexion"
+              text="Déjà un compte ? Se connecter"
+              style="-fx-background-color: transparent; -fx-text-fill: #CBA6F7; -fx-font-size: 13; -fx-border-color: #CBA6F7; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+      <!-- Bouton Effacer -->
+      <Button layoutX="265.0" layoutY="425.0"
+              prefWidth="143.0" prefHeight="35.0"
+              mnemonicParsing="false"
+              onAction="#clearInterface"
+              text="Effacer"
+              style="-fx-background-color: #45475A; -fx-text-fill: #CDD6F4; -fx-font-size: 12; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+      <!-- Bouton Fermer -->
+      <Button layoutX="422.0" layoutY="425.0"
+              prefWidth="143.0" prefHeight="35.0"
+              mnemonicParsing="false"
+              onAction="#FermerPage"
+              text="Fermer"
+              style="-fx-background-color: #F38BA8; -fx-text-fill: #1E1E2E; -fx-font-size: 12; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
    </children>
 </AnchorPane>

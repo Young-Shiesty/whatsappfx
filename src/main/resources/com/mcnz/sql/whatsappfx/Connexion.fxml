@@ -1,17 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="504.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mcnz.sql.whatsappfx.ConnexionController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="504.0" prefWidth="705.0"
+            style="-fx-background-color: #1E1E2E;"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mcnz.sql.whatsappfx.ConnexionController">
    <children>
-      <Text layoutX="87.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
-      <TextField fx:id="username_input" layoutX="157.0" layoutY="76.0" />
-      <Text layoutX="87.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
-      <TextField fx:id="password_input" layoutX="157.0" layoutY="128.0" />
-      <Button layoutX="85.0" layoutY="195.0" mnemonicParsing="false" onAction="#SeConnecter" prefHeight="26.0" prefWidth="186.0" text="Se Connecter" />
+
+      <!-- Titre -->
+      <Text layoutX="272.0" layoutY="90.0"
+            text="Connexion"
+            fill="#CBA6F7"
+            strokeType="OUTSIDE" strokeWidth="0.0">
+         <font><Font name="Arial Bold" size="32.0"/></font>
+      </Text>
+
+      <!-- Username Label -->
+      <Text layoutX="202.0" layoutY="160.0"
+            text="Username"
+            fill="#CDD6F4"
+            strokeType="OUTSIDE" strokeWidth="0.0">
+         <font><Font name="Arial" size="13.0"/></font>
+      </Text>
+
+      <!-- Username Input -->
+      <TextField fx:id="username_input"
+                 layoutX="202.0" layoutY="168.0"
+                 prefWidth="300.0" prefHeight="40.0"
+                 promptText="Entrez votre username"
+                 style="-fx-background-color: #313244; -fx-text-fill: #CDD6F4; -fx-border-color: #CBA6F7; -fx-border-radius: 6; -fx-background-radius: 6; -fx-prompt-text-fill: #585B70; -fx-font-size: 13;"/>
+
+      <!-- Password Label -->
+      <Text layoutX="202.0" layoutY="230.0"
+            text="Password"
+            fill="#CDD6F4"
+            strokeType="OUTSIDE" strokeWidth="0.0">
+         <font><Font name="Arial" size="13.0"/></font>
+      </Text>
+
+      <!-- Password Input -->
+      <PasswordField fx:id="password_input"
+                     layoutX="202.0" layoutY="238.0"
+                     prefWidth="300.0" prefHeight="40.0"
+                     promptText="Entrez votre mot de passe"
+                     style="-fx-background-color: #313244; -fx-text-fill: #CDD6F4; -fx-border-color: #CBA6F7; -fx-border-radius: 6; -fx-background-radius: 6; -fx-prompt-text-fill: #585B70; -fx-font-size: 13;"/>
+
+      <!-- Bouton Se Connecter -->
+      <Button layoutX="202.0" layoutY="305.0"
+              prefWidth="300.0" prefHeight="38.0"
+              mnemonicParsing="false"
+              onAction="#SeConnecter"
+              text="Se Connecter"
+              style="-fx-background-color: #CBA6F7; -fx-text-fill: #1E1E2E; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+      <!-- Bouton S'inscrire -->
+      <Button layoutX="202.0" layoutY="355.0"
+              prefWidth="300.0" prefHeight="38.0"
+              mnemonicParsing="false"
+              onAction="#SInscrire"
+              text="Pas de compte ? S'inscrire"
+              style="-fx-background-color: transparent; -fx-text-fill: #CBA6F7; -fx-font-size: 13; -fx-border-color: #CBA6F7; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
    </children>
 </AnchorPane>
