@@ -1,18 +1,22 @@
 package com.mcnz.sql.whatsappfx;
-
-
+import com.mcnz.sql.whatsappfx.entity.Message;
+import com.mcnz.sql.whatsappfx.entity.User;
+import com.mcnz.sql.whatsappfx.repository.impl.MessageRepository;
 import com.mcnz.sql.whatsappfx.serveur.Client;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public class MessageController {
@@ -27,17 +31,35 @@ public class MessageController {
     private String selectedUser;
 
     public void gereClient(Client client) {
+
         this.client = client;
         client.MessageRecu((envoyeur, contenu) -> {
             Platform.runLater(()->afficherMessage(envoyeur+":", contenu, false));
         });
         client.UserConnecter((username) -> {
-            Platform.runLater(()->usersListView.getItems().add(username));
+            Platform.runLater(() -> {
+                usersListView.getItems().remove(username);
+                usersListView.getItems().remove(username + "🟢");
+                usersListView.getItems().add(username + "🟢");
+            });
         });
         client.UserDeConnecter((username) -> {
-            Platform.runLater(()->usersListView.getItems().remove(username));
+            Platform.runLater(() -> {
+                usersListView.getItems().remove(username + "🟢");
+                usersListView.getItems().add(username);
+            });
         });
-        // On commence à écouter les messages
+
+        List<User> tousLesUsers = messageRepository.getTousLesUsers();
+        for (User u : tousLesUsers) {
+            if (!u.getUsername().equals(client.getUsername())) {
+                if (!usersListView.getItems().contains(u.getUsername())) {
+                    usersListView.getItems().add(u.getUsername());
+                }
+            }
+        }
+        configurerListView();
+        // On commence a ecouter les messages
         client.EcouterMessage();
     }
     @FXML
@@ -45,12 +67,27 @@ public class MessageController {
         usersListView.setOnMouseClicked(event -> {
             String userSelectionne = usersListView.getSelectionModel().getSelectedItem();
             if (userSelectionne != null) {
-                selectedUser = userSelectionne;
+                selectedUser = userSelectionne.replace("🟢", "").trim();
                 chatWithLabel.setText("💬 Conversation avec : " + selectedUser);
                 messagesBox.getChildren().clear();
+                //pour les message qui sont dans  le bd
+                User moi = messageRepository.getUserByUsername(client.getUsername());
+                User ami = messageRepository.getUserByUsername(selectedUser);
+                if (moi != null && ami != null) {
+                    List<Message> historique = messageRepository.getHistorique(moi, ami);
+                    for (Message m : historique) {
+                        if (m.getSender().getUsername().equals(client.getUsername())) {
+                            afficherMessage("Moi:", m.getContenu(), true);
+                        } else {
+                            afficherMessage(m.getSender().getUsername(), m.getContenu(), false);
+                        }
+                    }
+                }
             }
         });
     }
+
+    private MessageRepository messageRepository = new MessageRepository();
 
     @FXML
     public void gererEnvoie() {
@@ -66,17 +103,50 @@ public class MessageController {
         client.envoieMessage(selectedUser, contenu);
 
 
-        afficherMessage("Moi", contenu, true);
+        afficherMessage("Moi:", contenu, true);
         messageField.clear();
     }
 
     @FXML
     public void gererDeconnection() {
-        client.closeTt();
-        Stage stage = (Stage) messageField.getScene().getWindow();
-        stage.close();
+        new Thread(() -> {
+            client.closeTt();
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Connexion.fxml"));
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage) messageField.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        }).start();
     }
 
+    //pour avoir le client en ligne ou bien en hors ligne
+    private void configurerListView() {
+        usersListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> lv) {
+                return new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String username, boolean empty) {
+                        super.updateItem(username, empty);
+                        if (empty || username == null) {
+                            setText(null);
+                            setGraphic(null);
+                            setStyle("-fx-background-color: transparent;");
+                        }  else if (username.contains("🟢")) {
+                            setText("●  " + username.replace("🟢", "").trim());
+                            setStyle("-fx-background-color: #2e2e3e; -fx-text-fill: #2ecc71; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10;");
+                        } else {
+                            setText("●  " + username.trim());
+                            setStyle("-fx-background-color: #2e2e3e; -fx-text-fill: gray; -fx-font-size: 14px; -fx-padding: 10;");
+                        }
+
+                    }};}})
+        ;}
     private void afficherMessage(String expediteur, String contenu, boolean estMoi) {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(5));

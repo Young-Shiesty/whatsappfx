@@ -1,8 +1,14 @@
 package com.mcnz.sql.whatsappfx.serveur;
 
+import com.mcnz.sql.whatsappfx.entity.Message;
+import com.mcnz.sql.whatsappfx.entity.User;
+import com.mcnz.sql.whatsappfx.repository.impl.MessageRepository;
+import com.mcnz.sql.whatsappfx.repository.impl.UserRepository;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClientHandler implements Runnable {
 
@@ -11,6 +17,10 @@ public class ClientHandler implements Runnable {
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
     private String clientUsername;
+
+
+    private MessageRepository messageRepository = new MessageRepository();
+    private UserRepository userRepository = new UserRepository();
 
     public ClientHandler(Socket socket) {
         try {
@@ -29,6 +39,7 @@ public class ClientHandler implements Runnable {
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
                     closeTt();
+                    return;
                 }
             }
             clientHandlers.add(this);
@@ -37,7 +48,21 @@ public class ClientHandler implements Runnable {
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
+            for (ClientHandler c : clientHandlers) {
+                if (!c.clientUsername.equals(this.clientUsername)) {
+                    envoieMess("SERVEUR", c.clientUsername + " est en ligne");
+                }
+            }
             broadcastMessage("SERVEUR", clientUsername + " est en ligne");
+            //garde le mess dans la liste jusqua ce que le user se reconnecte
+            User receiver = userRepository.getUserByUsername(clientUsername);
+            if (receiver != null) {
+                List<Message> messagesEnAttente = messageRepository.getMessagesEnAttente(receiver);
+                for (Message m : messagesEnAttente) {
+                    envoieMess(m.getSender().getUsername(), m.getContenu());
+                    messageRepository.updateStatut(m.getId(), Message.Statut.RECU);
+                }
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,6 +89,14 @@ public class ClientHandler implements Runnable {
 
                     System.out.println("[MESSAGE] " + clientUsername + " → " + destinataire + " : " + contenu);
 
+                    User sender = userRepository.getUserByUsername(clientUsername);
+                    User receiver = userRepository.getUserByUsername(destinataire);
+                    if (receiver == null) {
+                        envoieMess("SERVEUR", destinataire + " n'existe pas");
+                        continue;
+                    }
+                    messageRepository.save(sender, receiver, contenu);
+                    System.out.println(" Message mis dans la bd ");
                     boolean trouver = false;
                     for (ClientHandler c : clientHandlers) {
                         if (c.clientUsername.equals(destinataire)) {
@@ -93,10 +126,12 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void broadcastMessage(String destinataire,String message) {
+    public void broadcastMessage(String destinataire, String message) {
         for (ClientHandler c : clientHandlers) {
             if (!c.clientUsername.equals(clientUsername)) {
-                c.envoieMess(destinataire,message);
+                if (c.socket != null && !c.socket.isClosed()) {
+                    c.envoieMess(destinataire, message);
+                }
             }
         }
     }

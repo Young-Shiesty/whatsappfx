@@ -26,6 +26,7 @@ public class ConnexionController {
     @FXML
     private TextField username_input;
 
+
     @FXML
     void SeConnecter(ActionEvent event) throws IOException {
         User user = userRepository.connecter(
@@ -33,17 +34,25 @@ public class ConnexionController {
                 password_input.getText()
         );
         if (user != null) {
-            Socket socket = new Socket("localhost", 1235);
+            Socket socket = new Socket("localhost", 1234);
             Client client = new Client(socket, username_input.getText());
-            client.login(password_input.getText());
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("message.fxml"));
-            Scene scene = new Scene(loader.load());
-            MessageController messageController = loader.getController();
-            messageController.gereClient(client);
+            boolean ok = client.login(password_input.getText());
 
-            Stage stage = (Stage) username_input.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            if (ok) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("message.fxml"));
+                Scene scene = new Scene(loader.load());
+                MessageController messageController = loader.getController();
+                messageController.gereClient(client);
+                Stage stage = (Stage) username_input.getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText(null);
+                alert.setContentText("Utilisateur déjà connecté !");
+                alert.showAndWait();
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -52,6 +61,7 @@ public class ConnexionController {
             alert.showAndWait();
         }
     }
+
     @FXML
     private void Connexion(ActionEvent event) throws IOException {
 

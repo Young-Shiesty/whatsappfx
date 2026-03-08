@@ -62,4 +62,14 @@ public class UserRepository implements ICrud<User> {
             return null;
         }
     }
+    public User getUserByUsername(String username) {
+        try {
+            return entityManager.createQuery(
+                            "FROM User WHERE username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

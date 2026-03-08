@@ -21,9 +21,11 @@ public class Client {
     public void MessageRecu(BiConsumer<String, String> callback) {
         this.MessageRecu = callback;
     }
+
     public void UserConnecter(Consumer<String> callback) {
         this.UserConnecter = callback;
     }
+
     public void UserDeConnecter(Consumer<String> callback) {
         this.UserDeConnecter = callback;
     }
@@ -52,31 +54,39 @@ public class Client {
 
             String con = bufferedReader.readLine();
 
-            return (con == null) ? false : true;
+            if (con != null && con.startsWith("OK")) {
+                return true;
+            } else {
+                return false;
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
+    public  String getUsername(){
+        return username;
+    }
+
+    private boolean rester=true;
+
     public void EcouterMessage() {
         //pour ecouter en arriere plan
         new Thread(() -> {
-            while (socket.isConnected()) {
+            while (rester && socket!=null && !socket.isClosed()) {
                 try {
                     String envoyeur = bufferedReader.readLine();
-                    String contenu    = bufferedReader.readLine();
+                    String contenu = bufferedReader.readLine();
 
                     if (envoyeur == null || contenu == null) break;
                     if (envoyeur.equals("SERVEUR") && contenu.contains("est en ligne")) {
                         String username = contenu.replace(" est en ligne", "").trim();
                         if (UserConnecter != null) UserConnecter.accept(username);
-                    }
-                    else if (envoyeur.equals("SERVEUR") && contenu.contains("est hors ligne")) {
+                    } else if (envoyeur.equals("SERVEUR") && contenu.contains("est hors ligne")) {
                         String username = contenu.replace(" est hors ligne", "").trim();
                         if (UserDeConnecter != null) UserDeConnecter.accept(username);
-                    }
-                    else {
+                    } else {
                         if (MessageRecu != null) MessageRecu.accept(envoyeur, contenu);
                     }
                 } catch (IOException e) {
@@ -86,6 +96,7 @@ public class Client {
             }
         }).start();
     }
+
     public void envoieMessage(String destinataire, String contenu) {
         try {
             bufferedWriter.write(destinataire);
@@ -99,6 +110,7 @@ public class Client {
     }
 
     public void closeTt() {
+        rester = false;
         try {
             if (bufferedReader != null) bufferedReader.close();
             if (bufferedWriter != null) bufferedWriter.close();
@@ -107,31 +119,4 @@ public class Client {
             e.printStackTrace();
         }
     }
-
-//    public static void main(String[] args) throws IOException {
-//        Scanner scanner = new Scanner(System.in);
-//
-//        System.out.print("Username : ");
-//        String username = scanner.nextLine();
-//        System.out.print("Password : ");
-//        String password = scanner.nextLine();
-//
-//        Socket socket = new Socket("localhost", 1234);
-//        Client client = new Client(socket, username);
-//
-//        // Se connecter
-//        if (!client.login(password)) {
-//            System.out.println("Login ou password incorrect.");
-//            return;
-//        }
-//        client.EcouterMessage();
-//
-//        while (socket.isConnected()) {
-//            System.out.println("Destinataire :");
-//            String destinataire = scanner.nextLine();
-//            System.out.println("Ton message :");
-//            String contenu = scanner.nextLine();
-//            client.envoieMessage(destinataire, contenu);
-//        }
-//    }
 }

@@ -26,12 +26,14 @@ public class MessageRepository{
         entityManager.getTransaction().commit();
     }
     public List<Message> getHistorique(User sender, User receiver) {
-        String requete = "FROM Message m WHERE " + "(m.sender = :sender AND m.receiver = :receiver) OR " + "(m.sender = :receiver AND m.receiver = :sender) " + "ORDER BY m.dateEnvoi ASC";
-        List<Message> messages = entityManager.createQuery(requete, Message.class).setParameter("sender", sender).setParameter("receiver", receiver).getResultList();
+        String requete = "FROM Message m WHERE " + "(m.sender.id = :senderId AND m.receiver.id = :receiverId) OR " + "(m.sender.id = :receiverId AND m.receiver.id = :senderId) " + "ORDER BY m.dateEnvoi ASC";
+        List<Message> messages = entityManager
+                .createQuery(requete, Message.class)
+                .setParameter("senderId", sender.getId())
+                .setParameter("receiverId", receiver.getId())
+                .getResultList();
         return messages;
-
     }
-
     public List<Message> getMessagesEnAttente(User receiver) {
         return entityManager.createQuery("FROM Message m WHERE m.receiver = :receiver " + "AND m.statut = :statut " + "ORDER BY m.dateEnvoi ASC", Message.class)
                 .setParameter("receiver", receiver).setParameter("statut", Message.Statut.ENVOYE)
