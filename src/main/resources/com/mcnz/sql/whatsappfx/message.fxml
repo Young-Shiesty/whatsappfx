@@ -15,7 +15,7 @@
       <ListView fx:id="usersListView"
                 VBox.vgrow="ALWAYS"
                 style="-fx-background-color: transparent; -fx-text-fill: white;"/>
-      <Button text="Se déconnecter"
+      <Button text="Se Deconnecter"
               onAction="#gererDeconnection"
               style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 15; -fx-cursor: hand;"
               maxWidth="Infinity"/>

@@ -69,7 +69,7 @@ public class Client {
         return username;
     }
 
-    private boolean rester=true;
+    private boolean rester;
 
     public void EcouterMessage() {
         //pour ecouter en arriere plan
@@ -89,8 +89,12 @@ public class Client {
                     } else {
                         if (MessageRecu != null) MessageRecu.accept(envoyeur, contenu);
                     }
+
                 } catch (IOException e) {
                     System.out.println("Connexion perdue !");
+                    break;
+                }
+                if(rester==false){
                     break;
                 }
             }
@@ -109,7 +113,7 @@ public class Client {
         }
     }
 
-    public void closeTt() {
+    public void closeTt(){
         rester = false;
         try {
             if (bufferedReader != null) bufferedReader.close();

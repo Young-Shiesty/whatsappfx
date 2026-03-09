@@ -8,6 +8,7 @@
         <!-- JDBC Connection Configuration -->
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+        <!--modification pour que ma base soit utilisable pour nous 2-->
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/examenjava" />
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <property name="javax.persistence.jdbc.password" value="passer" />
@@ -18,7 +19,5 @@
             <property name="hibernate.hbm2ddl.auto" value="update" />
         </properties>
     </persistence-unit>
-
-
 
 </persistence>

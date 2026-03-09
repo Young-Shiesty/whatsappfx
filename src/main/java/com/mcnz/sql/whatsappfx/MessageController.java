@@ -3,11 +3,14 @@ import com.mcnz.sql.whatsappfx.entity.Message;
 import com.mcnz.sql.whatsappfx.entity.User;
 import com.mcnz.sql.whatsappfx.repository.impl.MessageRepository;
 import com.mcnz.sql.whatsappfx.serveur.Client;
+import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -107,11 +110,12 @@ public class MessageController {
         messageField.clear();
     }
 
+
     @FXML
     public void gererDeconnection() {
         new Thread(() -> {
             client.closeTt();
-
+        Platform.runLater(()->{
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Connexion.fxml"));
             Scene scene = new Scene(loader.load());
@@ -121,6 +125,7 @@ public class MessageController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+                        });
         }).start();
     }
 
